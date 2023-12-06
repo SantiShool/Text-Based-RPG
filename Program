@@ -1,0 +1,2674 @@
+Authored by: Santiago Shool
+
+import cmd
+import textwrap
+import sys
+import os
+import time
+import random
+import math
+
+sys.setrecursionlimit(2000)
+
+counter = 0
+counter_set = 0
+
+name =''
+hp = 0
+max_hp = 0
+
+might = 0
+consumption_rate = 10
+fortitude = 10
+rations = 0
+max_rations = 0
+race = ''
+luck = 0
+arrows = 0
+max_arrows = 0
+speed = 0
+occupation = ''
+illness = 'None'
+gold = 100
+max_gold = 0
+
+blacksmith_price = 500
+
+
+
+weapon = 'Sword'
+weapon_type = 'sword'
+
+location = ''
+days_to_go = 0
+adventure_state = False
+
+enemy_adjective = ''
+enemy_type = ''
+enemy_locater = ''
+enemy_number = ''
+enemy_exclude = 0
+enemy_battlescore = 0
+enemy_gold = 0
+enemy_arrows = 0
+enemy_rations = 0
+enemy_specific_gold = 0
+enemy_specific_arrows = 0
+enemy_specific_rations = 0
+damage_taken = 0
+
+### Title Screen ###
+def title_screen_selections():
+    option = input('>: ')
+
+    if option.lower() == '1':
+        setup_game() 
+    elif option.lower() == '2':
+        intro()
+    elif option.lower() == '0':
+        sys.exit()
+    while option.lower() not in ['1', '2', '0']:
+        option = input('>: ')
+        if option() == '1':
+            setup_game() 
+        elif option() == '2':
+            intro()
+        elif option() == '0':
+            sys.exit()
+
+def title_screen():
+    os.system('cls')
+    print('###########################################################################################################################################')
+    print('#                                                            ArkosInc Presents                                                            #')
+    print('###########################################################################################################################################\n')
+    print('                                                      Tide of Tyranny: City in Chains                                                      \n')
+    print('                                                                  1: Play                                                                  \n')
+    print('                                                                  2: Intro                                                                 \n')
+    print('                                                                  3: Quit                                                                  \n')
+    title_screen_selections()
+
+def intro():
+    print('[INTRODUCTION]')
+    intro1 = 'The broadcast began with a sweeping aerial view of the shattered capital city of Kalin. The buildings lay in ruins, and bodies scattered across the streets painted a grim picture of devastation. Standing prominently at the foot of the fallen Union Court building was the imposing figure known as \'Shark Attack\', a formidable pirate whose reputation preceded him.\n'
+    for narrator in intro1:
+      sys.stdout.write(narrator)
+      sys.stdout.flush()
+      time.sleep(0.025)
+    print()
+    intro2 = 'Naline\'s voice, transmitted over the footage, carried a mix of shock and concern as she observed the scene.\n'
+    for narrator in intro2:
+      sys.stdout.write(narrator)
+      sys.stdout.flush()
+      time.sleep(0.025)
+    print('')
+    print('Naline:')
+    intro3 = '   Ladies and gentlemen, adventurers and commonfolk, I bring you this harrowing sight from the heart of Kalin. The once-proud city now lies in ruin, and Shark Attack, a name feared throughout Kenton, stands as its harbinger of destruction.\n'
+    for character in intro3:
+    	sys.stdout.write(character)
+    	sys.stdout.flush()
+    	time.sleep(0.035)
+    print('')
+    intro4 = 'The camera focused on Shark Attack, his presence foreboding, as he delivered his ominous message.\n'
+    for narrator in intro4:
+    	sys.stdout.write(narrator)
+    	sys.stdout.flush()
+    	time.sleep(0.025)
+    print('')
+    print('Shark Attack:')
+    intro5 = '   Listen up, folks. This here city\'s fall is a warnin\'. The nobles and their fancy systems oppress the commonfolk. If you don\'t cast \'em aside, your cities will follow Kalin\'s fate.\n'
+    for character in intro5:
+    	sys.stdout.write(character)
+    	sys.stdout.flush()
+    	time.sleep(0.035)
+    print('')
+    intro6 = 'Naline\'s voice, now tinged with uncertainty, offered a question to the viewers.\n'
+    for narrator in intro6:
+    	sys.stdout.write(narrator)
+    	sys.stdout.flush()
+    	time.sleep(0.025)
+    print('')
+    print('Naline:')
+    intro7 = '   The question we must all ponder is this: Can we stand against such an individual, or should we consider Shark Attack\'s warning seriously? Is it time for change in Kenton, and can we forge a different path for our future?\n'
+    for character in intro7:
+    	sys.stdout.write(character)
+    	sys.stdout.flush()
+    	time.sleep(0.035)
+    print('')
+    intro8 = 'As Naline\'s question echoed across the continent, it served as a rallying cry for you and countless other adventurers, sellswords, and seekers of justice. Inspired by her words and the dire circumstances, you signed a mercenary contract, vowing to bring Shark Attack to justice and challenge the oppressive systems that plagued Kenton. The path ahead was treacherous, but it was a path forged with purpose, driven by the need for change and the determination to answer the call.\n'
+    for narrator in intro8:
+    	sys.stdout.write(narrator)
+    	sys.stdout.flush()
+    	time.sleep(0.025)
+    print()
+    setup_game()
+    
+### Character Creation ###
+# Name #
+def setup_game():
+    global name
+    global hp
+    global max_hp
+    global might 
+    global consumption_rate 
+    global fortitude 
+    global rations 
+    global max_rations 
+    global race 
+    global luck 
+    global arrows 
+    global max_arrows
+    global speed 
+    global occupation 
+    global illness 
+    global illness_chance 
+    global gold
+    global max_gold 
+    global durability 
+    global weapon
+    global max_heal_item
+    global adventure_state
+
+    arrows = 0
+    gold = 0
+    rations = 0
+    max_arrows = 0
+    max_gold = 0
+    max_rations = 0
+    hp = 0
+    max_hp = 0
+    might = 0
+    heal_item = 0
+    fortitude = 10
+    adventure_state = False
+    os.system('cls')
+    print('[CHARACTER CREATION]\n')
+    print('Type Name Below:\n')
+
+    name = input('>: ')
+
+# Occupation #
+    print('Occuptation:\n')
+    print('1 Brute\n2 Mystic\n3 Specialist\n4 Jack-of-All-Trades\n')
+    
+    selection = input('>: ')
+    if selection == '1':
+        occupation = 'Brute'
+        hp = 250
+        max_hp = 250
+        might = 20
+        fortitude = 200
+        rations = 50
+        max_rations = 100
+        arrows = 5
+        max_arrows = 10
+        gold = 50
+        max_gold = 100
+        luck = 5
+        speed = 10
+    elif selection == '2':
+        occupation = 'Mystic'
+        hp = 150
+        max_hp = 150
+        might = 10
+        fortitude = 100
+        rations = 40
+        max_rations = 80
+        arrows = 5
+        max_arrows = 10
+        gold = 80
+        max_gold = 160
+        luck = 30
+        speed = 15
+    elif selection == '3':
+        occupation = 'Specialist'
+        hp = 180
+        max_hp = 180
+        might = 30
+        fortitude = 150
+        rations = 60
+        max_rations = 120
+        arrows = 10
+        max_arrows = 20
+        gold = 70
+        max_gold = 140
+        luck = 10
+        speed = 20
+    elif selection == '4':
+        occupation = 'Jack-of-All-Trades'
+        hp = 200
+        max_hp = 200
+        might = 15
+        fortitude = 150
+        rations = 50
+        max_rations = 100
+        arrows = 10
+        max_arrows = 20
+        gold = 100
+        max_gold = 200
+        luck = 15
+        speed = 15
+    else:
+        occupation = 'Jack of All Trades'
+        hp = 200
+        max_hp = 200
+        might = 15
+        fortitude = 150
+        rations = 50
+        max_rations = 100
+        arrows = 10
+        max_arrows = 20
+        gold = 100
+        max_gold = 200
+        luck = 15
+        speed = 15
+
+# Race #
+    os.system('cls')
+    print('Race:\n')
+    print('1 Dragonborn\n2 Dwarf\n3 Elf\n4 Halfling\n5 Half-Orc\n6 Human\n7 Tiefling\n')
+
+    selection = input('>: ')
+    if selection == '1':
+        race = "Dragonborn"
+        hp = hp + 70
+        max_hp = max_hp + 70
+        might = might + 20
+        consumption_rate = 18
+    elif selection == '2':
+        race = "Dwarf"
+        fortitude = fortitude + 50
+        luck = luck + 15
+        consumption_rate =  14
+    elif selection == '3':
+        race = "Elf"
+        luck = luck + 10
+        speed = speed + 35
+        consumption_rate = 8
+    elif selection == '4':
+        race = "Halfling"
+        luck = luck + 25
+        speed = speed + 20
+        consumption_rate = 6
+    elif selection == '5':
+        race = "Half-Orc"
+        hp = hp + 80
+        max_hp = max_hp + 80
+        might = 25
+        fortitude = fortitude + 30
+        consumption_rate = 20
+    elif selection == '6':
+        race = "Human"
+        might = might + 30
+        speed = speed + 20
+        consumption_rate = 10
+    elif selection == '7':
+        race = "Tiefling"
+        might = might + 25
+        luck = luck + 20
+        consumption_rate = 7
+        
+    else:
+        race = "Human"
+        might = might + 30
+        speed = speed + 20
+        consumption_rate = 10
+
+    os.system('cls')
+
+    print('What is your choice of weaponry? (ie. sword, polearm, etc.)')
+
+    weapon = input('>: ')
+    gold_mechanic()
+    os.system('cls')
+    
+    #print('What is your weapon called? (ie. Thorn, Crusher, etc.)')
+
+    #weapon = input('>: ')
+    #os.system('cls')
+
+    print('----------------------')
+    print('Name: ' + name + '')
+    print('Race: ' + race + '')
+    print('Occupation: ' + occupation + '')
+    print('----------------------')
+    print('HP: ' + str(hp) + '/' + str(max_hp) + '')
+    print('Might: ' + str(might) + '')
+    print('Weapon: ' + weapon + '')
+    print('----------------------')
+    print('Consumption Rate: ' + str(consumption_rate) + '')
+    print('Rations: ' + str(rations) + '/' + str(max_rations) + '')
+    print('Fortitude: ' + str(fortitude) + '')
+    print('arrows: ' + str(arrows) + '/' + str(max_arrows) + '')
+    print('----------------------')
+    print('Luck: ' + str(luck) + '')
+    print('Speed: ' + str(speed) + '\n')
+    #print('Illness: ' + illness + '')
+    print('Gold: ' + str(gold) + '/' + str(max_gold) + '')
+    print('----------------------\n')
+    print('1 Embark\n2 Restart')
+    selection = input('>: ')
+    if selection == '1': 
+        start_game()
+    else: 
+        title_screen()
+### Death ###
+def death():
+    os.system('cls')
+    death1 = 'YOU DIED.\n'
+    for narrator in death1:
+    	sys.stdout.write(narrator)
+    	sys.stdout.flush()
+    	time.sleep(0.17)
+    print()
+    char_menu()
+    print()
+    print('1 Menu\n2 Quit')
+    selection = input('>: ')
+    if selection == '1':
+        title_screen()
+    else:
+        sys.exit()
+
+### Rations and fortitude Mechanic ###
+
+def rations_fortitude_mechanic():
+    global rations
+    global fortitude
+    global consumption_rate
+    if rations < consumption_rate and rations > 0:
+        rations = 0
+    elif rations > 1:
+        rations = rations - consumption_rate
+    elif rations < 1:
+        rations = 0
+        fortitude = fortitude - consumption_rate
+        if fortitude < 1:
+            fortitude = 0
+            death()
+        elif fortitude <= consumption_rate:
+            print('If you do not get rations, you will starve to death.')
+        
+    #need to work on restoring fortitude#
+
+### Resource Mechanics ###
+
+def hp_mechanic():
+    global hp
+    global max_hp
+    if hp > max_hp:
+        hp = max_hp
+        print('You have max HP.')
+    if hp < 1:
+        hp = 0
+        death()
+
+def gold_mechanic():
+    global gold
+    global max_gold
+    if gold < 1:
+        gold = 0
+    if gold > max_gold:
+        gold = max_gold
+        print('You have completely filled your coin purse.')
+    if gold < 1:
+        gold = 0
+
+def rations_mechanic():
+    global rations
+    global max_rations
+    if rations > max_rations:
+        rations = max_rations
+        print('You have maxed out your rations supply.')
+    if rations < 1:
+        rations = 0
+
+def arrows_mechanic():
+    global arrows
+    global max_arrows
+    if arrows < 1:
+        arrows = 0 
+    if arrows > max_arrows:
+        arrows = max_arrows
+        print('You have maxed out your arrow count.')
+    if arrows < 1:
+        arrows = 0
+        
+### Character Menu ###
+def char_menu():
+    os.system('cls')
+    global name
+    global hp
+    global max_hp
+    global might 
+    global consumption_rate 
+    global fortitude 
+    global rations 
+    global max_rations 
+    global race 
+    global luck 
+    global arrows 
+    global max_arrows
+    global speed 
+    global occupation 
+    global illness 
+    global illness_chance 
+    global gold
+    global max_gold 
+    global weapon
+
+    print('----------------------')
+    print('Name: ' + name + '')
+    print('Race: ' + race + '')
+    print('Occupation: ' + occupation + '')
+    print('----------------------')
+    print('HP: ' + str(hp) + '/' + str(max_hp) + '')
+    print('Might: ' + str(might) + '')
+    print('Weapon: ' + weapon + '')
+    print('----------------------')
+    print('Consumption Rate: ' + str(consumption_rate) + '')
+    print('Rations: ' + str(rations) + '/' + str(max_rations) + '')
+    print('Fortitude: ' + str(fortitude) + '')
+    print('arrows: ' + str(arrows) + '/' + str(max_arrows) + '')
+    print('----------------------')
+    print('Luck: ' + str(luck) + '')
+    print('Speed: ' + str(speed) + '\n')
+    #print('Illness: ' + illness + '')
+    print('Gold: ' + str(gold) + '/' + str(max_gold) + '')
+    print('----------------------\n')
+    selection = input('Press enter to continue')
+    
+
+### Adventure Menu ###
+def adventure_menu():
+    global hp
+    global max_hp
+    global might 
+    global consumption_rate 
+    global fortitude 
+    global rations
+    global max_rations
+    global arrows
+    global max_arrows
+    global gold
+    global max_gold
+    global weapon
+
+    os.system('cls')
+    print('----------------------')
+    print('HP: ' + str(hp) + '/' + str(max_hp) + '')
+    print('Rations: ' + str(rations) + '/' + str(max_rations) + '')
+    print('Arrows: ' + str(arrows) + '/' + str(max_arrows) + '')
+    print('Gold: ' + str(gold) + '/' + str(max_gold) + '')
+    print('Fortitude: ' + str(fortitude) + '')
+    print('Luck: ' + str(luck) + '')
+    print('Speed:' + str(speed) + '')
+    print('----------------------')
+    print('Might: ' + str(might) + '')
+    print('Weapon: ' + weapon + '')
+    print('Consumption Rate: ' + str(consumption_rate) + '')
+    print('----------------------\n')
+
+### Map ###
+def the_map():
+    #print('Key: T = Town; C = City; etc.)
+
+    if location == 'Artema':
+        
+        print('-----------------')
+        print('| X |   |   |   |')
+        print('+---+---+---+---+')
+        print('|   | X |   |   |')
+        print('+---+---+---+---+')
+        print('|   | X | X |   |')
+        print('+---+---+---+---+')
+        print('|   |   |   | X |')
+        print('+---+---+---+---+')
+        print('|   |   |   | A |')
+        print('+---------------+\n')
+
+    if location == 'Yalen':
+        
+        print('-----------------')
+        print('| X |   |   |   |')
+        print('+---+---+---+---+')
+        print('|   | X |   |   |')
+        print('+---+---+---+---+')
+        print('|   | X | X |   |')
+        print('+---+---+---+---+')
+        print('|   |   |   | Y |')
+        print('+---+---+---+---+')
+        print('|   |   |   | A |')
+        print('+---------------+\n')
+
+
+    if location == 'The Underground':
+        
+        print('-----------------')
+        print('| X |   |   |   |')
+        print('+---+---+---+---+')
+        print('|   | X |   |   |')
+        print('+---+---+---+---+')
+        print('|   | X | U |   |')
+        print('+---+---+---+---+')
+        print('|   |   |   | Y |')
+        print('+---+---+---+---+')
+        print('|   |   |   | A |')
+        print('+---------------+\n')
+
+    if location == 'Rothwark':
+        
+        print('-----------------')
+        print('| X |   |   |   |')
+        print('+---+---+---+---+')
+        print('|   | X |   |   |')
+        print('+---+---+---+---+')
+        print('|   | R | U |   |')
+        print('+---+---+---+---+')
+        print('|   |   |   | Y |')
+        print('+---+---+---+---+')
+        print('|   |   |   | A |')
+        print('+---------------+\n')
+
+    if location == 'Millimere':
+        
+        print('-----------------')
+        print('| X |   |   |   |')
+        print('+---+---+---+---+')
+        print('|   | M |   |   |')
+        print('+---+---+---+---+')
+        print('|   | R | U |   |')
+        print('+---+---+---+---+')
+        print('|   |   |   | Y |')
+        print('+---+---+---+---+')
+        print('|   |   |   | A |')
+        print('+---------------+\n')
+
+    if location == 'Kalin':
+        
+        print('-----------------')
+        print('| K |   |   |   |')
+        print('+---+---+---+---+')
+        print('|   | M |   |   |')
+        print('+---+---+---+---+')
+        print('|   | R | U |   |')
+        print('+---+---+---+---+')
+        print('|   |   |   | Y |')
+        print('+---+---+---+---+')
+        print('|   |   |   | A |')
+        print('+---------------+\n')
+
+    days_to_go()
+
+### Days to Go ###
+def days_to_go():
+    global location
+    global counter
+    global counter_set
+    global adventure_state
+    
+    if location == 'Artema':
+        if adventure_state == False:
+            counter_set = 7
+            counter = 7
+            print('You will soar the skies for ' + str(counter_set) + ' days.')
+            print('1 Continue\n2 Back')
+            selection = input('>: ')
+            if selection == '1':
+                input('Press enter to continue')
+                adventuring()
+                
+            elif selection == '2':
+                town()
+            else:
+                town()
+        if adventure_state == True:
+            print('You have ' + str(counter) + ' days to go.')
+            input('Press enter to continue')
+
+    if location == 'Yalen':
+        if adventure_state == False:
+            counter_set = 11
+            counter = 11
+            print('You will brave the wilds for ' + str(counter_set) + ' days.')
+            print('1 Continue\n2 Back')
+            selection = input('>: ')
+            if selection == '1':
+                input('Press enter to continue')
+                adventuring()
+                
+            if selection == '2':
+                town()
+            else:
+                town()
+        if adventure_state == True:
+            print('You have ' + str(counter) + ' days to go.')
+            input('Press enter to continue')
+    if location == 'The Underground':
+        if adventure_state == False:
+            counter_set = 15
+            counter = 15
+            print('You will traverse the caves for ' + str(counter_set) + ' days.')
+            print('1 Continue\n2 Back')
+            selection = input('>: ')
+            if selection == '1':
+                input('Press enter to continue')
+                adventuring()
+                
+            if selection == '2':
+                town()
+            else:
+                town()
+        if adventure_state == True:
+            print('You have ' + str(counter) + ' days to go.')
+            input('Press enter to continue')
+    if location == 'Rothwark':
+        if adventure_state == False:
+            counter_set = 19
+            counter = 19
+            print('You will speed though the tracks for ' + str(counter_set) + ' days.')
+            print('1 Continue\n2 Back')
+            selection = input('>: ')
+            if selection == '1':
+                input('Press enter to continue')
+                adventuring()
+                
+            if selection == '2':
+                town()
+            else:
+                town()
+        if adventure_state == True:
+            print('You have ' + str(counter) + ' days to go.')
+            input('Press enter to continue')
+    if location == 'Millimere':
+        if adventure_state == False:
+            counter_set = 25 
+            counter = 25
+            print('You will sail the sea for ' + str(counter_set) + ' days.')
+            print('1 Continue\n2 Back')
+            selection = input('>: ')
+            if selection == '1':
+                input('Press enter to continue')
+                adventuring()
+                
+            if selection == '2':
+                town()
+            else:
+                town()
+        if adventure_state == True:
+            print('You have ' + str(counter) + ' days to go.')
+            input('Press enter to continue')
+                
+            if selection == '2':
+                town()
+            else:
+                town()
+        if adventure_state == True:
+            print('You have ' + str(counter) + ' days to go.')
+            input('Press enter to continue')
+
+### Treasure Generator ###
+#def treasure_generator():
+   # v = random.randint(0, 3)
+   # print('You found ' + str(v) + ' treasures on this leg of the journey.')
+    
+
+### Location Changer ###
+def location_changer():
+    global location
+    global adventure_state
+
+    adventure_state == False
+    
+    if location == 'Artema':
+        location = 'Yalen'
+        blacksmith_price_generator()
+        #treasure_generator()
+        town()
+    if location == 'Yalen':
+        location = 'The Underground'
+        blacksmith_price_generator()
+        town()
+    if location == 'The Underground':
+        location = 'Rothwark'
+        blacksmith_price_generator()
+        town()
+    if location == 'Rothwark':
+        location = 'Millimere'
+        blacksmith_price_generator()
+        town()
+    if location == 'Millimere':
+        location = 'Kalin'
+        blacksmith_price_generator()
+        Kalin()
+        #end_game()
+
+    #town()
+
+### Town Description ###
+def town_description():
+    global location
+    
+    if location == 'Artema':
+        print('In this futuristic metropolis, towering skyscrapers with sleek glass and metal facades dominate the skyline, showcasing a blend of innovative architecture. Some buildings reach staggering heights, creating a diverse urban landscape of geometric and cylindrical structures. Amidst this high-tech scenery, green rooftops add a touch of nature. The bustling city life is centered around a spacious plaza, where modern art sculptures stand and people gather, highlighting the vibrant community. This city seamlessly merges advanced technology with the beauty and functionality of urban spaces, offering an immersive and dynamic environment.\n')
+    elif location == 'Yalen':
+        print('In this enchanting city, ancient and modern elements blend harmoniously against a backdrop of rolling hills and a serene river. Traditional, red-roofed houses, nestled closely together, line narrow, cobblestone streets that meander through the city, creating a labyrinthine charm. Amidst these historical structures, contemporary buildings with glass facades and sleek designs punctuate the skyline, reflecting a fusion of times. The city\'s vibrant life is palpable in the bustling market squares, where locals and visitors alike mingle, and the air is filled with the enticing aromas of regional cuisine. Overlooking this picturesque scene, a grand, historic castle stands majestically, its presence a testament to the city\'s rich heritage and enduring allure.')
+    elif location == 'The Underground':
+        print('Beneath the surface, in the subterranean realm simply known as the Underground, a clandestine metropolis thrives, hidden in the shadows of the earth. Here, sinister tendrils of corruption weave their intricate web through the twisting alleyways, where crime families and mobs hold dominion over the labyrinthine streets. The air, thick with the acrid stench of secrecy, melds seamlessly with the earthy musk of hidden dealings, creating an atmosphere where trust is a rare currency. Each footfall reverberates through narrow passages, echoing off dank walls, a rhythm of whispered conspiracies and unspoken threats that reverberate through the very core of this clandestine realm, where darkness thrives and secrets are the currency of survival.')
+    elif location == 'Rothwark':
+        print('Behold Rothwark, a marvel of architectural innovation nestled within the coast and moutainous regions. This magnificent city, a testament to human achievement, combines the aesthetic of intricate brass and gears with the pursuit of higher education. Its pristine ivory spires pierce the heavens, each adorned with the emblem of intellectual pursuit—a symbol revered by all who call Rothwark home. Here, knowledge is might, and the pursuit of wisdom is a way of life, all amidst the hiss of steam and the clang of gears. The air is filled with the hum of scholarly discourse, as the brightest minds convene in magnificent libraries and grand lecture halls. Yet, amid the pursuit of knowledge, secrets and mysteries lurk beneath the city\'s gleaming brass and gear-laden exterior, inviting exploration and discovery.')
+    elif location == 'Millimere':
+        print('In the realm of high fantasy, Millimere emerges as a city that stands as a testament to imagination\'s boundless reach. Its soaring spires, adorned with intricate carvings, reach toward the heavens, and its winding streets weave through districts that bear witness to diverse cultures and traditions. Vibrant markets bustle with exotic goods and lively merchants, while enchanted lanterns cast an ethereal glow upon cobblestone streets and shimmering canals. Yet, beneath this grandeur, secrets and mysteries unfurl in the shadowy alleys, making Millimere not just a city of physical splendor but a realm where legends are born and enigmas lie hidden beneath its surface, a living, breathing tapestry of the realms where the stories of adventurers, diplomats, and scholars intertwine in a symphony of intrigue and discovery.')
+### Start Game ###
+def start_game():
+    global location
+    location = 'Artema'
+    blacksmith_price_generator()
+    enemy_locater_generator()
+    town()
+
+### Town ###
+def town():
+    global counter
+    global adventure_state
+    os.system('cls')
+    adventure_state == False
+    print('[' + location + ']')
+    town_description()
+    print()
+    print('1 Tavern\n2 Blacksmith\n3 Character\n4 Adventure')
+    selection = input('>: ')
+    if selection == '1':
+        os.system('cls')
+        tavern()
+    if selection == '4':
+        os.system('cls')
+        counter = 0
+        the_map()
+        print('You will brave the wilds for 5 days.')
+        input('Press enter to continue')
+        adventuring()
+
+    if selection == '2':
+        os.system('cls')
+        blacksmith()
+    if selection == '3':
+        os.system('cls')
+        char_menu()
+        town()
+    else:
+        town()
+
+### Tavern ###
+def tavern():
+    global rations
+    global consumption_rate
+    global gold
+    global hp
+    global location
+
+    os.system('cls')
+    print('----------------------')
+    print('Gold: ' + str(gold) + '/' + str(max_gold) + '')
+    print('HP: ' + str(hp) + '/' + str(max_hp) + '')
+    print('Rations: ' + str(rations) + '/' + str(max_rations) + '')
+    print('----------------------\n')
+    print('Taverkeep:')
+    print('   Welcome weary traveler to my tavern, find solace in this humble abode.\n')
+    print('1 Rest (1 gold)\n2 Buy Rations (3 gold)\n3 Sell Rations (1 gold)\n4 Speak with random patron\n5 Back')
+    selection = input('>: ')
+    if selection == '1':
+        if gold < 1:
+            print('You cannot afford a bed here.')
+            input('Press enter to continue.')
+            tavern()
+        else:
+            print('You slept like a rock.')
+            hp = hp + 99999
+            hp_mechanic()
+            gold = gold - 1
+            input('Press enter to continue.')
+            tavern()
+
+    if selection == '2':
+        print('How much rations do you want to buy?')
+        total_cost = 0
+        rations_price = 3
+        n = input('>: ')
+        if n == '0':
+            tavern()
+        n = int(n)
+        total_cost = n * rations_price
+        if total_cost > gold:
+            print('You do not have enough gold to buy ' + str(n) + ' rations.')
+            input('Press enter to continue')
+            tavern()
+        elif total_cost <= gold:
+            rations = rations + n
+            rations_mechanic()
+            gold = gold - total_cost
+            print('You complete the transaction')
+            input('Press enter to continue')
+            tavern()
+    if selection == '3':
+        print('How much rations do you want to sell?')
+        total_sell = 0
+        rations_sell = 1
+        n = input('>: ')
+        if n == '0':
+            tavern()
+        n = int(n)
+        total_sell = n * rations_sell
+        if rations < n:
+            print('You do not have that much rations.')
+            input('Press enter to continue')
+            blacksmith()
+        if rations >= n:
+            rations = rations - n
+            gold = gold + total_sell
+            print('You complete the transaction')
+            gold_mechanic()
+            input('Press enter to continue')
+            os.system('cls')
+            tavern()
+    if selection == '4':
+        talk()
+        tavern()
+    if selection == '5':
+        town()
+    else:
+        tavern()
+
+# Talk #
+def talk():
+    dialogue = random.randint(1, 8)
+    part = ''
+    if dialogue == 1:
+        print('Otherwordly Individual:')
+        patron1 = '   This plane needs to get it\'s act together.\n'
+        for character in patron1:
+        	sys.stdout.write(character)
+        	sys.stdout.flush()
+        	time.sleep(0.035)
+    if dialogue == 2:
+    	print('Anxious Elf:')
+    	patron2 = '   I would\'ve never left my home if I\'d known what lurks in the Kenton region!\n'
+    	for character in patron2:
+    		sys.stdout.write(character)
+    		sys.stdout.flush()
+    		time.sleep(0.035)
+    if dialogue == 3:
+    	print('Unruly Human:')
+    	patron3a = '   Be careful consuming strange mushroom'
+    	for character in patron3a:
+    		sys.stdout.write(character)
+    		sys.stdout.flush()
+    		time.sleep(0.035)
+    	patron3b = 's...'
+    	for character in patron3b:
+    		sys.stdout.write(character)
+    		sys.stdout.flush()
+    		time.sleep(0.21)
+    	patron3c = ' or don\'t,'
+    	for character in patron3c:
+    		sys.stdout.write(character)
+    		sys.stdout.flush()
+    		time.sleep(0.1)
+    	patron3d = ' I don\'t care.\n'
+    	for character in patron3d:
+    		sys.stdout.write(character)
+    		sys.stdout.flush()
+    		time.sleep(0.035)
+    if dialogue == 4:
+        print('Young Human:')
+        patron4 = '   I am the coolest kid today and always!\n'
+        for character in patron4:
+        	sys.stdout.write(character)
+        	sys.stdout.flush()
+        	time.sleep(0.035)
+    if dialogue == 5:
+        print('Wise Loxodon:')
+        patron5 = '   It is important to increase your Might, even if it comes at a great cost.\n'
+        for character in patron5:
+        	sys.stdout.write(character)
+        	sys.stdout.flush()
+        	time.sleep(0.035)
+    if dialogue == 6:
+        print('Condescending Human')
+        patron6a = '   That pirate that ravaged Kalin?'
+        for character in patron6a:
+        	sys.stdout.write(character)
+        	sys.stdout.flush()
+        	time.sleep(0.035)
+        patron6b = ' Pft-'
+        for character in patron6b:
+        	sys.stdout.write(character)
+        	sys.stdout.flush()
+        	time.sleep(0.21)
+        patron6c =' that is way above your rank, kid.\n'
+        for character in patron6c:
+        	sys.stdout.write(character)
+        	sys.stdout.flush()
+        	time.sleep(0.035)
+    if dialogue == 7:
+        print('Tall Satyr:')
+        patron7 = '   Oh thank the gods, I thought I had lost my crystals!\n'
+        for character in patron7:
+        	sys.stdout.write(character)
+        	sys.stdout.flush()
+        	time.sleep(0.035)
+    if dialogue == 8:
+        print('Cyberneticly-Enhanced Human:')
+        patron8 = '   Do you know where I could find some oil? My elbow is getting a bit rusty.\n'
+        for character in patron8:
+        	sys.stdout.write(character)
+        	sys.stdout.flush()
+        	time.sleep(0.035)
+    input('Press enter to continue')
+    tavern()
+### Blacksmith ###
+def blacksmith():
+    global weapon
+    global weapon_type
+    global gold
+    global max_gold
+    global blacksmith_price
+    global might
+    global arrows
+    global max_arrows
+
+    os.system('cls')
+    print('----------------------')
+    print('Gold: ' + str(gold) + '/' + str(max_gold) + '')
+    print('Arrows: ' + str(arrows) + '/' + str(max_arrows) + '')
+    print('Might: ' + str(might) + '')
+    print('----------------------\n')
+    print('Blacksmith:')
+    print('   Ahh, well met. What needs smithing this day?\n')
+    print('1 Upgrade your ' + weapon + ' (' + str(blacksmith_price) + ') gold.\n2 Buy Arrows (3 gold)\n3 Sell Arrows (1 gold) \n4 Back')
+    selection = input('>: ')
+    if selection == '1':
+        if gold < blacksmith_price:
+            print('You do not have enough gold to upgrade your ' + weapon_type + '.')
+            input('Press enter to continue')
+            blacksmith()
+        else:
+            gold = gold - blacksmith_price
+            gold_mechanic()
+            v = 25
+            might = might + v
+            print('Under the deft hands of the blacksmith, your weapon has been transformed. Your Might increases by ' + str(v) + '.')
+            input('Press enter to continue')
+            blacksmith()
+    if selection == '2':
+        print('How many arrows do you want to buy?')
+        total_cost = 0
+        arrow_price = 3
+        n = input('>: ')
+        n = int(n)
+        total_cost = n * arrow_price
+        if total_cost > gold:
+            print('You do not have enough gold to buy ' + str(n) + ' arrows.')
+            input('Press enter to continue')
+            blacksmith()
+        if total_cost <= gold:
+            arrows = arrows + n
+            arrows_mechanic()
+            gold = gold - total_cost
+            print('You complete the transaction')
+            input('Press enter to continue')
+            blacksmith()
+    if selection == '3':
+        print('How many arrows do you want to sell?')
+        total_sell = 0
+        arrow_sell = 1
+        n = input('>: ')
+        n = int(n)
+        total_sell = n * arrow_sell
+        if arrows < n:
+            print('You do not have that many arrows.')
+            input('Press enter to continue')
+            blacksmith()
+        if arrows >= n:
+            arrows = arrows - n
+            gold = gold + total_sell
+            print('You complete the transaction')
+            gold_mechanic()
+            input('Press enter to continue')
+            os.system('cls')
+            blacksmith()
+
+    if selection == '4':
+        town()
+    else:
+        blacksmith()
+
+
+### Blacksmith Price Generator ###
+def blacksmith_price_generator():
+    global gold
+    global location
+    global blacksmith_price
+    
+    blacksmith_price = 50
+    if location == 'Yalen':
+        blacksmith_price = blacksmith_price + 15
+    if location == 'The Underground':
+        blacksmith_price = blacksmith_price + 45
+    if location == 'Rothwark':
+        blacksmith_price = blacksmith_price + 65
+    if location == 'Millimere':
+        blacksmith_price = blacksmith_price + 85
+    
+        
+### Adventuring ###
+def adventuring():
+    global name
+    global hp
+    global max_hp
+    global might 
+    global consumption_rate 
+    global fortitude 
+    global rations 
+    global max_rations 
+    global race 
+    global luck 
+    global arrows 
+    global max_arrows
+    global speed 
+    global occupation 
+    global illness 
+    global gold
+    global max_gold  
+    global weapon
+    global counter
+    global location
+    global adventure_state
+
+    adventure_state == True
+    while counter != 0:
+        adventure_state = True
+        if hp > 0:
+            adventure_menu()
+            print('1 Continue\n2 Hunt\n3 Rest\n4 Map\n')
+            selection = input('>: ')
+            os.system('cls')
+            if selection == '1':
+                rations_fortitude_mechanic()
+                adventure_menu()
+                random_event()    
+                counter = counter - 1
+            if selection == '2':
+                hunt()
+            if selection == '3':
+                rest()
+            if selection == '4':
+                the_map()
+            else:
+                adventuring()
+        else:
+            death()
+    counter = 0
+    os.system('cls')
+    adventure_menu()
+    print('You have survived the trip.')
+    adventure_state = False
+    print('Enter 0 to continue.')
+    selection = input('>: ')
+    if selection == '0':
+        location_changer()
+    else:
+        adventuring()    #was location_changer()
+
+### Rest ###
+def rest():
+    global hp
+    global max_hp
+    global rations
+
+    x = random.randint(15, 25)
+    rations_fortitude_mechanic()
+
+    if hp == max_hp:
+        print('You rest for one day. Your HP is already maxed out.')
+
+        input('Press enter to continue')
+        adventuring()
+    
+    print('You rest for one day, gaining ' + str(x) + ' HP.')
+    hp = hp + x
+    hp_mechanic()
+    
+    input('Press enter to continue')
+
+### Hunt ###
+def hunt():
+    global arrows
+    global rations
+    x = random.randint(1, 10)
+    y = random.randint(1, 25)
+
+    if arrows == 0:
+       print('You do not have any arrows to hunt with.')
+       input('Press enter to continue')
+       adventuring()
+
+    elif arrows < x:
+        adventure_menu()
+        x = arrows
+        arrows = arrows - x
+        rations = rations + y
+        arrows_mechanic()
+        print('You shot ' + str(x) + ' arrows, and gained ' + str(y) + ' rations.') 
+        rations_mechanic()
+
+    else:
+        adventure_menu()
+        arrows = arrows - x
+        rations = rations + y
+        arrows_mechanic()
+        rations_mechanic()
+        print('You shot ' + str(x) + ' arrows, and gained ' + str(y) + ' rations.')
+
+    input('Press enter to continue')
+                  
+########################################################################
+########################### Random Events ##############################
+########################################################################
+def random_event():
+    n = random.randint(1, 20)
+    if n == 1:
+        chest()
+    if n == 2:
+        fight()
+    if n == 3:
+        robbed()
+    if n == 4:
+        traveller()
+    if n == 5:
+        damaged()
+    if n == 6:
+        miracle()
+    if n == 7:
+        mushroom()
+    if n == 8:
+        nothing()
+    if n == 9:
+        fight()
+    if n == 10:
+        fight()
+    if n == 11:
+        chest()
+    if n == 12:
+        fight()
+    if n == 13:
+        robbed()
+    if n == 14:
+        traveller()
+    if n == 15:
+        damaged()
+    if n == 16:
+        mystic()
+    if n == 17:
+        bigger_bag()
+    if n == 18:
+        lose_day()
+    if n == 19:
+        fight()
+    if n == 20:
+        fight()
+
+### Mushroom ###
+def mushroom():
+    global fortitude
+    global hp
+    global consumption_rate
+    global race
+    
+    print('You see a strange mushroom.')
+    print('1 Consume\n2 Leave')
+    w = 0
+    selection = input('>: ')
+    if selection == '1':
+        x = random.randint(1, 4)
+        if x == 1:
+            if occupation == 'Ranger':
+                w = consumption_rate + consumption_rate + consumption_rate
+                fortitude = fortitude + w
+                print('You eat the mushroom, and gain ' + str(w) + ' Fortitude.')
+            else:
+                print('You eat the mushroom, and nothing happened.')
+        if x == 2:
+            if occupation == 'Ranger':
+                w = consumption_rate + consumption_rate + consumption_rate
+                fortitude = fortitude + w
+                print('You eat the mushroom, and gain ' + str(w) + ' Fortitude.')
+            else:
+                print('You eat the mushroom, and it causes you to vomit.')
+                rations_fortitude_mechanic()
+        if x == 3:
+            w = consumption_rate + consumption_rate
+            fortitude = fortitude + w
+            print('You eat the mushroom, and gain ' + str(w) + ' Fortitude.')
+        if x == 4:
+            if occupation == 'Ranger':
+                w = consumption_rate + consumption_rate
+                fortitude = fortitude + w
+                print('You eat the mushroom, and gain ' + str(w) + ' Fortitude.')
+            else:
+                hp = 0
+                fortitude = 0
+                print('You eat the mushroom, and then fall to the ground, foaming at the mouth.')
+                input('Press enter to continue')
+                death()
+
+    elif selection == '2':
+        print('You leave the mushroom.')
+    else:
+        mushroom()
+    input('Press enter to continue')
+
+### Miracle ###
+def miracle():
+    global race
+    global rations
+    global max_rations
+    global arrows
+    global max_arrows
+    global gold
+    global max_gold
+    global hp
+    global max_hp
+    
+    if race == 'Halfling':
+        print('You see an old wizard, and the wizard beckons you over.')
+        print('"Ho, there, traveler!"')
+        print('"I did not expect to see a Halfing out in the wilderness."')
+        print('"This is delightful. Here, have a gift."')
+        print('Fill:\n1 Rations\n2 Arrows\n3 Gold\n4 HP')
+        selection = input('>: ')
+        if selection == '1':
+            rations = max_rations
+            rations_mechanic
+        if selection == '2':
+            arrows = max_arrows
+            arrows_mechanic
+        if selection == '3':
+            gold = max_gold
+            gold_mechanic
+        if selection == '4':
+            hp = max_hp
+            hp_mechanic
+        input('Press enter to continue')
+    else:
+        nothing()
+    
+### Bigger Bag ###
+def bigger_bag():
+    global max_rations
+    global max_arrows
+    global max_gold
+    
+    y = random.randint(1, 3)
+    if y == 1:
+        max_rations = max_rations + 10
+        print('You find an empty rations storage container on the side of the path, and it holds more rations than your current one.')
+        input('Press enter to take\n')
+        print('Max rations increased by 10.')
+    if y == 2:
+        max_arrows = max_arrows + 10
+        print('You spot an empty quiver on the side of the path. It holds more arrows than your current one.')
+        input('Press enter to take\n')
+        print('Max arrows increased by 10.')
+    if y == 3:
+        max_gold = max_gold + 100
+        print('You discover an empty coin purse on the side of the path. It holds more gold than your current one.')
+        input('Press enter to take\n')
+        print('Max gold increased by 100.')
+    print()
+    input('Press enter to continue')
+
+### Lose a Day ###
+def lose_day():
+    global counter
+    global location
+    v = random.randint(1, 3)
+    #y = random.randint(1, 2)
+    #k = random.randint(1, 100)
+    counter = counter + v
+    #if y == 1:
+
+    print('You realize that you are lost. It will take you ' + str(v) + ' days to get back on the right path.')
+    #if y == 2:
+        #if location == 'Artema' or 'Yalen':
+            #print('You arrive at a bridge spanning a massive whitewater river that is guarded by a score of bandits. One bandit approaches you.')
+        #elif location == 'The Underground' or 'Rothwark' or 'Millimere':
+            #print('You arrive at a bridge spanning an enormous chasm that is guarded by a score of bandits. One bandit approaches you.')
+        #print('"If you want to cross this bridge, you have to pay us, ' + str(k) 'gold.\n')
+#        print('1 Pay gold\n2 Take a detour\n')
+##        selection = input('>: ')
+#        if selection == '1':
+#            if k > gold:
+#            print('"That is not enough to cross, but we will keep what you gave us, and you can find another way around. Have fun out there."')
+#            gold = 0
+##            else:
+ #               gold = gold - k
+ #               print('You gave the bandit ' + str(k) + ' gold, and they let you cross the bridge.')
+ #       elif selection == '2'
+ #       else:
+ #           selection = input('>: ')
+
+
+    input('Press enter to continue')
+
+### Mystic ###
+def mystic():
+    global name
+    global hp
+    global max_hp
+    global might 
+    global consumption_rate 
+    global fortitude 
+    global rations 
+    global max_rations 
+    global race 
+    global luck 
+    global arrows 
+    global max_arrows
+    global speed 
+    global occupation 
+    global illness 
+    global illness_chance 
+    global gold
+    global max_gold 
+    global weapon
+    global consumption_rate
+
+
+    
+    print('You come upon a roaming mystic.')
+    print('The mystic offers you a blessing.\n')
+    print('Increase:\n1 Max HP\n2 Fortitude\n3 Might\n')
+    #print('Fill: ')
+    selection = input('>: ')
+    os.system('cls')
+    if selection == '1':
+        max_hp = max_hp + 10
+        hp = hp + 10
+        print('Your max HP increases by 10.')
+        input('Press enter to continue')
+    elif selection == '2':
+        fortitude = fortitude + consumption_rate
+        print('Your fortitude increases by ' + str(consumption_rate) + '.')
+        input('Press enter to continue')
+    elif selection == '3':
+        might = might + 10
+        print('Your Might increases by 10.')
+        input('Press enter to continue')
+    else:
+        mystic()
+        
+
+### Nothing ###
+def nothing():
+    print('Nothing notable happens.')
+    input('Press enter to continue')
+
+### Damaged (Random Event) ###
+def damaged():
+    global hp
+    global gold
+    global rations
+    global arrows
+    #adventure_menu()
+    v = random.randint(1, 20)
+    n = random.randint(1, 3)
+    hp = hp - v
+    
+    if n == 1:
+        g = random.randint(1, 20)
+        gold = gold + g
+        print('You sprain your ankle in a divot, taking ' + str(v) + ' damage.')
+        print('However, you find ' + str(g) + ' gold on the ground.')
+        gold_mechanic()
+    if n == 2:
+        f = random.randint(1, 20)
+        rations = rations + f
+        print('You are stung by a swarm of bees, taking ' + str(v) + ' damage.')
+        print('However, you manage to take ' + str(f) + ' honey before you flee.')
+        rations_mechanic()
+        
+    if n == 3:
+        a = random.randint(1, 20)
+        arrows = arrows + a
+        print('You walk into an hunter\'s trap, taking ' + str(v) + ' damage.')      
+        print('However, you find ' + str(a) + ' arrows nearby.')
+        arrows_mechanic()
+
+    
+    input('Press enter to continue')
+    hp_mechanic()
+
+### Traveller ###
+def traveller():
+    global gold
+    global arrows
+    global rations
+    global hp
+    print('A friendly adventurer approaches you and wants to trade.')
+    n = random.randint(1, 3)
+    if n == 1:
+        print('"Good morning, traveler."\n')
+    if n == 2:
+        print('"Good evening, traveler."\n')
+    if n == 3:
+        print('"Good afternoon, traveler."\n')
+
+    traveller_values()
+
+# Traveller Values #
+def traveller_values():
+    
+    traveller_generation()
+    input('Press enter to continue')
+    
+
+
+#### Traveller Generation ####
+def traveller_generation():
+    global gold
+    global arrows
+    global rations
+    global hp
+    x = random.randint(1, 50) # how much trader wants
+    v = random.randint(1, 100) #how much trader is willing to give
+    c = random.randint(1, 4) # what trader wants
+
+    if c == 1:
+        print('The trader wants ' + str(x) + ' rations.')
+        p = random.randint(1, 3) # what trader is giving
+        if p == 1:
+            print('The trader is willing to give ' + str(v) + ' arrows.')
+            print('1 Accept\n2 Decline')
+            selection = input('>: ')
+            if selection == '1':
+                if rations < x:
+                    print('You cannot afford the trade.')        
+                else:
+                    rations = rations - x
+                    arrows = arrows + v
+                    print('You accept the trade.')
+                    arrows_mechanic()
+                    
+            else:
+                print('You decline the trade.')
+                
+        if p == 2:
+            print('The trader is willing to pay ' + str(v) + ' gold.')
+            print('1 Accept\n2 Decline')
+            selection = input('>: ')
+            if selection == '1':
+                if rations < x:
+                    print('You cannot afford the trade.')        
+                else:
+                    rations = rations - x
+                    gold = gold + v
+                    print('You accept the trade.')
+                    gold_mechanic()
+                    
+            else:
+                print('You decline the trade.')
+                
+        if p == 3:
+            print('The trader is willing to heal you ' + str(v) + ' HP.')
+            print('1 Accept\n2 Decline')
+            selection = input('>: ')
+            if selection == '1':
+                if rations < x:
+                    print('You cannot afford the trade.')        
+                else:
+                    rations = rations - x
+                    hp = hp + v
+                    print('You accept the trade.')
+                    hp_mechanic()
+                    
+            else:
+                print('You decline the trade.')
+    if c == 2:
+        print('The trader wants ' + str(x) + ' arrows.')
+        p = random.randint(1, 3) # what trader is giving
+        if p == 1:
+            print('The trader is willing to give ' + str(v) + ' rations.')
+            print('1 Accept\n2 Decline')
+            selection = input('>: ')
+            if selection == '1':
+                if arrows < x:
+                    print('You cannot afford the trade.')        
+                else:
+                    arrows = arrows - x
+                    rations = rations + v
+                    print('You accept the trade.')
+                    rations_mechanic()
+                    
+            else:
+                print('You decline the trade.')
+        if p == 2:
+            print('The trader is willing to give ' + str(v) + ' gold.')
+            print('1 Accept\n2 Decline')
+            selection = input('>: ')
+            if selection == '1':
+                if arrows < x:
+                    print('You cannot afford the trade.')        
+                else:
+                    arrows = arrows - x
+                    gold = gold + v
+                    print('You accept the trade.')
+                    gold_mechanic()
+                    
+            else:
+                print('You decline the trade.')
+        if p == 3:
+            print('The trader is willing to heal you for ' + str(v) + ' HP.')
+            print('1 Accept\n2 Decline')
+            selection = input('>: ')
+            if selection == '1':
+                if arrows < x:
+                    print('You cannot afford the trade.')        
+                else:
+                    arrows = arrows - x
+                    hp = hp + v
+                    print('You accept the trade.')
+                    hp_mechanic()
+                    
+            else:
+                print('You decline the trade.')
+    if c == 3:
+        print('The trader wants ' + str(x) + ' gold.')
+        p = random.randint(1, 3) # what trader is giving
+        if p == 1:
+            print('The trader is willing to give ' + str(v) + ' rations.')
+            print('1 Accept\n2 Decline')
+            selection = input('>: ')
+            if selection == '1':
+                if gold < x:
+                    print('You cannot afford the trade.')        
+                else:
+                    gold = gold - x
+                    rations = rations + v
+                    print('You accept the trade.')
+                    rations_mechanic()
+        
+            else:
+                print('You decline the trade.')
+        if p == 2:
+            print('The trader is willing to give ' + str(v) + ' arrows.')
+            print('1 Accept\n2 Decline')
+            selection = input('>: ')
+            if selection == '1':
+                if gold < x:
+                    print('You cannot afford the trade.')        
+                else:
+                    gold = gold - x
+                    arrows = arrows + v
+                    print('You accept the trade.')
+                    arrows_mechanic()
+                    
+            else:
+                print('You decline the trade.')
+
+        if p == 3:
+            print('The trader is willing to heal you ' + str(v) + ' HP.')
+            print('1 Accept\n2 Decline')
+            selection = input('>: ')
+            if selection == '1':
+                if gold < x:
+                    print('You cannot afford the trade.')        
+                else:
+                    gold = gold - x
+                    hp = hp + v
+                    print('You accept the trade.')
+                    hp_mechanic()
+                    
+            else:
+                print('You decline the trade.')        
+    if c == 4:
+        print('The trader wants your blood. Specifically, ' + str(x) + ' HP.')
+        p = random.randint(1, 3) # what trader is giving
+        if p == 1:
+            print('The trader is willing to give ' + str(v) + ' rations.')
+            print('1 Accept\n2 Decline')
+            selection = input('>: ')
+            if selection == '1':
+                if hp < x:
+                    print('You cannot afford the trade, but the trader will accept what you have.')        
+                    hp = hp - x
+                    rations = rations + v
+                    rations_mechanic()
+                else:
+                    hp = hp - x
+                    rations = rations + v
+                    print('You accept the trade.')
+                    rations_mechanic()
+                    
+            else:
+                print('You decline the trade.')
+        if p == 2:
+            print('The trader is willing to give ' + str(v) + ' arrows.')
+            print('1 Accept\n2 Decline')
+            selection = input('>: ')
+            if selection == '1':
+                if hp < x:
+                    print('You cannot afford the trade, but the trader is willing to let you slide, this time.')        
+                    hp = hp - x
+                    rations = rations + v
+                    rations_mechanic()
+                else:
+                    hp = hp - x
+                    arrows = arrows + v
+                    print('You accept the trade.')
+                    arrows_mechanic()
+                    
+            else:
+                print('You decline the trade.')
+        if p == 3:
+            print('The trader is willing to give ' + str(v) + ' gold.')
+            print('1 Accept\n2 Decline')
+            selection = input('>: ')
+            if selection == '1':
+                if hp < x:
+                    print('You cannot afford the trade, but the trader is willing to let you slide, this time.')        
+                    hp = hp - x
+                    rations = rations + v
+                    rations_mechanic()
+                else:
+                    hp = hp - x
+                    gold = gold + v
+                    print('You accept the trade.')
+                    gold_mechanic()
+
+            else:
+                print('You decline the trade.')
+
+    
+
+### Robbed ###
+def robbed():
+    global gold
+    global arrows
+    global rations
+
+    x = random.randint(1, 3)
+    if rations == 0 and arrows == 0 and gold == 0:
+        nothing()
+    elif x == 1: 
+        v = random.randint(1, 50) 
+        if rations < v:
+            v = rations
+
+        rations = rations - v
+        rations_mechanic()
+        y = random.randint(1, 2)
+        #adventure_menu()
+        if y == 1:
+            print('During the night, a shadowy figure stole ' + str(v) + ' of your rations.')
+        elif y == 2:
+            print('You check your rations supply and find that ' + str(v) + ' rations is missing.')   
+    elif x == 2:
+        v = random.randint(1, 50)
+        if arrows < v:
+            v = arrows
+        arrows = arrows - v
+        arrows_mechanic()
+        y = random.randint(1, 2)
+        #adventure_menu()
+        if y == 1:
+            print('During the night, a shadowy figure stole ' + str(v) + ' of your arrows.')
+        elif y == 2:
+            print('You check your arrow quiver, and find that ' + str(v) + ' arrows are missing.') 
+        
+    elif x == 3:
+        v = random.randint(1, 50)
+        if gold < v:
+            v = gold
+        gold = gold - v
+        gold_mechanic()
+        y = random.randint(1, 2)
+        #adventure_menu()
+        if y == 1:
+            print('During the night, a shadowy figure stole ' + str(v) + ' of your gold.')
+        elif y == 2:
+            print('You check your coin purse, and find that ' + str(v) + ' gold is missing.')
+
+    v = 0
+    x = 0
+    
+    input('Press enter to continue')
+
+# Doppelganger #
+def doppelganger():
+    global enemy_type
+    global weapon
+    global name
+
+    if enemy_type == 'Doppelganger':
+        print('The doppelganger is wielding a ' + weapon + ' exactly like yours.')
+
+### Fight ###
+def fight():
+    global hp
+    global might
+    global weapon
+    global durability
+    global gold
+    global enemy_adjective
+    global enemy_type
+    global enemy_battlescore
+    global enemy_gold
+    global counter
+
+
+    enemy_generator()
+    print('You see a ' + enemy_adjective + ' ' + enemy_type + ' approaching.')
+    doppelganger()
+    print('1 Fight\n2 Flee')
+    selection = input('>: ')
+    if selection == '1':
+        fight_simulation()
+        counter = counter - 1
+        adventuring()
+            
+    if selection == '2':
+        flee_fight()
+        counter = counter - 1
+        adventuring()
+
+    else:
+        flee_fight()
+        counter = counter - 1
+        adventuring()
+    
+# Fight Simulation #
+def fight_simulation():
+    global hp
+    global might
+    global weapon
+    global gold
+    global enemy_adjective
+    global enemy_type
+    global enemy_battlescore
+    global enemy_gold
+    global enemy_arrows
+    global enemy_rations
+    global damage_taken
+
+    your_damage_taken()
+    enemy_loot()
+
+    input('Press enter to continue')
+    #adventure_menu()
+
+# Enemy Loot #
+def enemy_loot():
+    global gold
+    global arrows
+    global rations
+    global enemy_gold
+    global enemy_arrows
+    global enemy_rations
+    
+    f = random.randint(1, 10)
+    enemy_rations = enemy_rations + f
+    rations = rations + enemy_rations
+    a = random.randint(1, 5)
+    enemy_arrows = enemy_arrows + a
+    arrows = arrows + enemy_arrows
+    g = random.randint(1, 10)
+    enemy_gold = enemy_gold + g
+    gold = gold + enemy_gold
+    print('You found ' + str(enemy_rations) + ' rations, ' + str(enemy_arrows) + ' arrows, and ' + str(enemy_gold) + ' gold on the corpse.')    
+    rations_mechanic()
+    arrows_mechanic()
+    gold_mechanic()
+
+# Your Damage Taken #
+def your_damage_taken():
+    global hp
+    global might
+    global enemy_battlescore
+    global damage_taken
+
+    damage_taken = enemy_battlescore - might
+    hp = int(hp - damage_taken)
+    if damage_taken < 1:
+        hp = hp + damage_taken
+        damage_taken = 0
+        print('The enemy was slain, and you took no damage.')
+    else:
+        print('The enemy was slain, but you took ' + str(damage_taken) + ' damage.')
+
+# Flee Fight #
+def flee_fight(speed):
+    failure_threshold = max (50 - speed, 1)
+    n = random.randint(1, 100)
+    if n > failure_threshold:
+        print('You escaped the fight.')
+        input('Press enter to continue')
+        adventure_menu()
+    else:    
+        print('You failed to flee the fight.')
+        input('Press enter to continue')
+        fight_simulation()
+
+# Enemy Generator #
+def enemy_generator():
+    global enemy_adjective
+    global enemy_type
+    global enemy_battlescore
+
+    enemy_resetter()
+    enemy_adjective_generator()
+    enemy_type_generator()
+    
+# Enemy Resetter #
+def enemy_resetter():
+    global enemy_type
+    global enemy_battlescore
+    global enemy_gold
+    global enemy_rations
+    global enemy_arrows
+    global enemy_specific_gold
+    global enemy_specific_arrows
+    global enemy_specific_rations
+
+    enemy_type = ''
+    enemy_rations = 0
+    enemy_arrows = 0
+    enemy_gold = 0
+    enemy_specific_gold = 0
+    enemy_specific_arrows = 0
+    enemy_specific_rations = 0
+    enemy_battlescore = 0
+    enemy_adjective = ''
+
+### Enemy Locater and Excluder Generator ###
+def enemy_locater_generator():
+    global enemy_locater
+    global location
+    global enemy_exclude
+    global enemy_number
+    
+    if location == 'Artema':
+        enemy_locater = 'Artema'
+        enemy_exclude = [i for i in range (5,24)]
+    if location == 'Yalen':
+        enemy_locater = 'Yalen'
+        enemy_exclude = [i for i in range(1,5)] + [i for i in range(10,24)]
+    if location == 'The Underground':
+        enemy_locater = 'The Underground'
+        enemy_exclude = [i for i in range(1,10)] + [i for i in range(15,24)]
+    if location == 'Rothwark':
+        enemy_locater = 'Rothwark'
+        enemy_exclude = [i for i in range(1,15)] + [i for i in range(19,24)]
+    if location == 'Millimere':
+        enemy_locater = 'Millimere'
+        enemy_exclude = [i for i in range(1,19)]
+    enemy_number = random.randint(1, 23)
+    while enemy_number in enemy_exclude:
+        enemy_number = random.randint(1, 23)
+
+# Enemy Type Generator #
+def enemy_type_generator():
+    global enemy_type
+    global enemy_battlescore
+    global enemy_gold
+    global enemy_rations
+    global enemy_arrows
+    global enemy_specific_gold
+    global enemy_specific_arrows
+    global enemy_specific_rations
+    global enemy_locater
+    global enemy_exclude
+    global enemy_number
+
+    enemy_locater_generator()    
+
+    if enemy_number == 1:
+        enemy_type = 'Harpy'
+        enemy_battlescore = enemy_battlescore + 25
+        enemy_specific_rations = 1
+        enemy_specific_arrows = 0
+        enemy_specific_gold = 3
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+        
+        
+    if enemy_number == 2:
+        enemy_type = 'Griffon'
+        enemy_battlescore = enemy_battlescore + 35
+        enemy_specific_rations = 2
+        enemy_specific_arrows = 1
+        enemy_specific_gold = 5
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+       
+    if enemy_number == 3:
+        enemy_type = 'Manticore'
+        enemy_battlescore = enemy_battlescore + 45
+        enemy_specific_rations = 3
+        enemy_specific_arrows = 0
+        enemy_specific_gold = 7
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold 
+        
+    if enemy_number == 4:
+        enemy_type = 'Couatl'
+        enemy_battlescore = enemy_battlescore + 55
+        enemy_specific_rations = 2
+        enemy_specific_arrows = 2
+        enemy_specific_gold = 9
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+        
+    if enemy_number == 5:
+        enemy_type = 'Gelatinous Cube'
+        enemy_battlescore = enemy_battlescore + 65
+        enemy_specific_rations = 4
+        enemy_specific_arrows = 0
+        enemy_specific_gold = 11
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+        
+    if enemy_number == 6:
+        enemy_type = 'Doppelganger'
+        enemy_battlescore = enemy_battlescore + 75
+        enemy_specific_rations = 3
+        enemy_specific_arrows = 1
+        enemy_specific_gold = 13
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+    if enemy_number == 7:
+        enemy_type = 'Orc War Chief'
+        enemy_battlescore = enemy_battlescore + 85
+        enemy_specific_rations = 3
+        enemy_specific_arrows = 1
+        enemy_specific_gold = 15
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+    if enemy_number == 8:
+        enemy_type = 'Gladiator'
+        enemy_battlescore = enemy_battlescore + 95
+        enemy_specific_rations = 4
+        enemy_specific_arrows = 0
+        enemy_specific_gold = 17
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+    if enemy_number == 9:
+        enemy_type = 'Chimera'
+        enemy_battlescore = enemy_battlescore + 105
+        enemy_specific_rations = 5
+        enemy_specific_arrows = 0
+        enemy_specific_gold = 19
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+    if enemy_number == 10:
+        enemy_type = 'Black Pudding'
+        enemy_battlescore = enemy_battlescore + 115
+        enemy_specific_rations = 0
+        enemy_specific_arrows = 0
+        enemy_specific_gold = 21
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+    if enemy_number == 11:
+        enemy_type = 'Beholder Zombie'
+        enemy_battlescore = enemy_battlescore + 125
+        enemy_specific_rations = 0
+        enemy_specific_arrows = 0
+        enemy_specific_gold = 23
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+    if enemy_number == 12:
+        enemy_type = 'Cyclops'
+        enemy_battlescore = enemy_battlescore + 135
+        enemy_specific_rations = 4
+        enemy_specific_arrows = 0
+        enemy_specific_gold = 25
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+    if enemy_number == 13:
+        enemy_type = 'Mind Flayer'
+        enemy_battlescore = enemy_battlescore + 145
+        enemy_specific_rations = 4
+        enemy_specific_arrows = 0
+        enemy_specific_gold = 27
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+    if enemy_number == 14:
+        enemy_type = 'Fire Giant'
+        enemy_battlescore = enemy_battlescore + 155
+        enemy_specific_rations = 4
+        enemy_specific_arrows = 0
+        enemy_specific_gold = 29
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+    if enemy_number == 15:
+        enemy_type = 'Chain Devil'
+        enemy_battlescore = enemy_battlescore + 165
+        enemy_specific_rations = 5
+        enemy_specific_arrows = 0
+        enemy_specific_gold = 31
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+    if enemy_number == 16:
+        enemy_type = 'Bone Devil'
+        enemy_battlescore = enemy_battlescore + 175
+        enemy_specific_rations = 5
+        enemy_specific_arrows = 0
+        enemy_specific_gold = 33
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+    if enemy_number == 17:
+        enemy_type = 'Horned Devil'
+        enemy_battlescore = enemy_battlescore + 185
+        enemy_specific_rations = 6
+        enemy_specific_arrows = 0
+        enemy_specific_gold = 37
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+    if enemy_number == 18:
+        enemy_type = 'Ice Devil'
+        enemy_battlescore = enemy_battlescore + 195
+        enemy_specific_rations = 6
+        enemy_specific_arrows = 1
+        enemy_specific_gold = 39
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+    if enemy_number == 19:
+        enemy_type = 'Roaming Pirates'
+        enemy_battlescore = enemy_battlescore + 205
+        enemy_specific_rations = 7
+        enemy_specific_arrows = 1
+        enemy_specific_gold = 39
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+    if enemy_number == 20:
+        enemy_type = 'Adult Blue Dragon'
+        enemy_battlescore = enemy_battlescore + 215
+        enemy_specific_rations = 7
+        enemy_specific_arrows = 0
+        enemy_specific_gold = 41
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+    if enemy_number == 21:
+        enemy_type = 'Dragon Turtle'
+        enemy_battlescore = enemy_battlescore + 225
+        enemy_specific_rations = 14
+        enemy_specific_arrows = 0
+        enemy_specific_gold = 20
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+    if enemy_number == 22:
+        enemy_type = 'Ancient Blue Dragon'
+        enemy_battlescore = enemy_battlescore + 235
+        enemy_specific_rations = 10
+        enemy_specific_arrows = 0
+        enemy_specific_gold = 45
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+    if enemy_number == 23:
+        enemy_type = 'Kraken'
+        enemy_battlescore = enemy_battlescore + 250
+        enemy_specific_rations = 12
+        enemy_specific_arrows = 0
+        enemy_specific_gold = 50
+        enemy_rations = enemy_rations + enemy_specific_rations
+        enemy_arrows = enemy_arrows + enemy_specific_arrows
+        enemy_gold = enemy_gold + enemy_specific_gold
+
+# Enemy Adjective Generator #
+def enemy_adjective_generator():
+    global enemy_adjective
+    global enemy_battlescore
+
+    j = random.randint(1, 3)
+    if j == 1:
+        enemy_adjective = 'Bloodthirsty'
+        enemy_battlescore = enemy_battlescore + 30
+    if j == 2:
+        enemy_adjective = 'Regular'
+        enemy_battlescore = enemy_battlescore + 0
+    if j == 3:
+        enemy_adjective = 'Exhausted'
+        enemy_battlescore = enemy_battlescore - 10
+
+### Chest ###                 
+def chest():
+    global hp
+    global max_hp
+
+    p = random.randint(1, 2)
+    if p == 1:
+        print('You see a treasure chest.')
+    if p == 2:    
+        print('You see a large hollow tree.')
+    print('1 Inspect\n2 Avoid')
+    selection = input('>: ')
+    if selection == '1':
+        a = random.randint(1, 3)
+        if a == 1:
+            print('It is empty. Nothing but cobwebs remain.')
+            input('Press enter to continue')
+            adventure_menu()
+        if a == 2:
+            print('It was booby trapped. A dart flies out and hits you for 20 damage.')
+            hp = hp - 20  
+            input('Press enter to continue')
+            hp_mechanic()
+            adventure_menu()
+        #if a == 2 and luck > 0:
+            #print('It was booby trapped. A dart flies out and hits you for 20 damage.')
+            #chestloot()
+        if a == 3:
+            chest_loot()
+
+    elif selection == '2':
+        print()
+
+    else:
+        chest()
+
+# Chest Loot #
+def chest_loot():
+    global gold
+    global arrows
+    global rations
+    global max_rations
+    
+    x = random.randint(1, 3)
+    if x == 1: 
+        v = random.randint(50, 100)
+        rations = rations + v
+        print('Inside, you found ' + str(v) + ' rations.')
+        rations_mechanic()
+    if x == 2:
+        v = random.randint(50, 100)
+        arrows = arrows + v
+        print('Inside, you found ' + str(v) + ' arrows.')
+        arrows_mechanic()
+    if x == 3:
+        v = random.randint(50, 100)
+        gold = gold + v
+        print('Inside, you found ' + str(v) + ' gold.')
+        gold_mechanic()
+
+    v = 0
+    input('Press enter to continue')
+    adventure_menu()
+
+####### Kalin #######
+def Kalin():
+    global counter
+    global adventure_state
+    global damage_taken
+    global enemy_battlescore
+    global might
+    global hp
+
+    os.system('cls')
+    print('-----------------')
+    print('| A |   |   |   |')
+    print('+---+---+---+---+')
+    print('| Y |   |   |   |')
+    print('+---+---+---+---+')
+    print('|   | U |   |   |')
+    print('+---+---+---+---+')
+    print('|   | R | M |   |')
+    print('+---+---+---+---+')
+    print('|   |   |   | K |')
+    print('+---------------+\n')
+    print('Kalin\n')
+    input('Press enter to continue')
+    os.system('cls')
+
+    print('[BOSS ENCOUNTER]')
+    boss1 = 'Rowing ashore with weary arms, you arrive at the desolate shores of Kalin, a city now but a shadow of its former glory. The ruins greet you with silence, broken only by the distant crash of waves. You step onto the land, your feet finding purchase among the remnants of a once bustling metropolis. The streets, a haunting mosaic of devastation, are littered with the remains of citizens and bizarre, crystal-fleshed abominations.'
+    for narrator in boss1:
+      sys.stdout.write(narrator)
+      sys.stdout.flush()
+      time.sleep(0.025)
+    print()
+    boss2 = 'Navigating through the eerily quiet city, you make your way to its heart. There, amidst the rubble, stands \'Shark Attack\' - a towering, formidable human male with the unmistakable air of a pirate. His presence commands attention, a stark contrast to the surrounding decay.'
+    for narrator in boss2:
+      sys.stdout.write(narrator)
+      sys.stdout.flush()
+      time.sleep(0.025)
+    print()
+    boss3 = 'Shark Attack strides forward, a hint of amusement in his sea-hardened eyes. His voice, deep and resonant, carries the cadence of one who has weathered many storms.\n'
+    for narrator in boss3:
+      sys.stdout.write(narrator)
+      sys.stdout.flush()
+      time.sleep(0.025)
+    print()
+    print('Shark Attack:')
+    boss4 = '   Well wel'
+    for character in boss4:
+      sys.stdout.write(character)
+      sys.stdout.flush()
+      time.sleep(0.065)
+    boss5 = 'l... '
+    for character in boss5:
+      sys.stdout.write(character)
+      sys.stdout.flush()
+      time.sleep(0.21)
+    boss6 = 'fate\'s blown someone interesting onto my shores, You ain\'t like the other ones that washed up here. There\'s a spark in your eye, the kind that speaks of more than just survival.\n'
+    for character in boss6:
+      sys.stdout.write(character)
+      sys.stdout.flush()
+      time.sleep(0.035)
+    print()
+    boss7 = 'He studies you for a moment, his gaze sharp, trying to unravel your story from just a glance.\n'
+    for narrator in boss7:
+      sys.stdout.write(narrator)
+      sys.stdout.flush()
+      time.sleep(0.025)
+    print()
+    print('Shark Attack:')
+    boss8 = '   So, tell me, stranger what\'s your purpose in rolling up on my island? What winds push your sails?\n'
+    for character in boss8:
+      sys.stdout.write(character)
+      sys.stdout.flush()
+      time.sleep(0.035)
+    print()
+    print('Type your response\n')
+    response = input('>: ')
+    print()
+    print(''+ name +':')
+    response1 = '   '+ response +'!\n'
+    for character in response1:
+      sys.stdout.write(character)
+      sys.stdout.flush()
+      time.sleep(0.035)
+    print()
+    
+    os.system('cls')
+    print('Shark Attack:')
+    boss9 = '   He'
+    for character in boss9:
+      sys.stdout.write(character)
+      sys.stdout.flush()
+      time.sleep(0.035)
+    boss10 = 'h... '
+    for character in boss10:
+      sys.stdout.write(character)
+      sys.stdout.flush()
+      time.sleep(0.21)
+    boss11 = 'is that so, huh? Folks recently been callin\' me \'Shark Attack,\' but my actual name is Torre Hierro. I ain\'t just another outlaw lookin\' for gold or notoriety.\n'
+    for character in boss11:
+      sys.stdout.write(character)
+      sys.stdout.flush()
+      time.sleep(0.035)
+    print()
+    boss12 = 'He shifts his weight, his stance relaxed yet commanding, eyes gazing into the distance as if seeing a different horizon.\n'
+    for narrator in boss12:
+      sys.stdout.write(narrator)
+      sys.stdout.flush()
+      time.sleep(0.025)
+    print()
+    print('Torre Hierro:')
+    boss13 = '   My real battle, the one I\'m truly fightin\' for, ain\'t against some rival crew or for personal gain. It\'s against the kings and highborns who\'ve been hoggin\' might while folks like us suffer. I plan to bring down Kenton, not for the chaos, but for freedom. It\'s about smashing a system that\'s been grindin\' down common folk for too long. We\'re talkin\' about a real revolution here, one where everyone\'s got a fair shake, not just those born with a silver spoon.\n'
+    for character in boss13:
+      sys.stdout.write(character)
+      sys.stdout.flush()
+      time.sleep(0.035)
+    print()
+    boss14 = 'Torre steps closer, his gaze unwavering and intense.\n'
+    for narrator in boss14:
+      sys.stdout.write(narrator)
+      sys.stdout.flush()
+      time.sleep(0.025)
+    print()
+    print('Torre Hierro:')
+    boss15 = '   Join me and my crew, we ain\'t just changing the fate of this island; we\'re makin\' a stand for the world. We got ourselves a chance to rewrite the rules, to build a place where every person\'s word holds the same weight.'
+    for character in boss15:
+      sys.stdout.write(character)
+      sys.stdout.flush()
+      time.sleep(0.035)
+    boss16 = ' But if you were to stand our way'
+    for character in boss16:
+      sys.stdout.write(character)
+      sys.stdout.flush()
+      time.sleep(0.065)
+    boss17 = ', then I\'ll have no choice but to deal with you as I have all the others. It\'s a hard road, no doubt. But it\'s the only way to a world where everyone\'s equal. What\'s your play? You with us, or against us?\n'
+    for character in boss17:
+      sys.stdout.write(character)
+      sys.stdout.flush()
+      time.sleep(0.035)
+    print()
+    print('1 Accept offer\n2 Decline offer\n')
+    selection = input('>: ')
+    os.system('cls')
+
+    if selection == '1':
+        join1 = 'As you stand amidst the ruins of Kenton, a decision takes root in your heart. You declare your allegiance to Torre and his cause, your voice steady, resonating with newfound purpose. Torre Hierro, the man known as Shark Attack, nods with a mix of respect and camaraderie, a silent pact forming between you both. In that moment, a shared vision for a new world is born, one where freedom and equality reign supreme.\n'
+        for narrator in join1:
+        	sys.stdout.write(narrator)
+        	sys.stdout.flush()
+        	time.sleep(0.025)
+        print()
+        join2 = 'Years late'
+        for narrator in join2:
+        	sys.stdout.write(narrator)
+        	sys.stdout.flush()
+        	time.sleep(0.025)
+        join3 = 'r...\n'
+        for narrator in join3:
+        	sys.stdout.write(narrator)
+        	sys.stdout.flush()
+        	time.sleep(0.21)
+        print()
+        join4 =  'The familiar crackle of the radio cuts through a more somber air, as Naline\'s voice carries a note of gravity and reflection. Her words, usually lively, now bear the weight of the events that have transpired.\n'
+        for narrator in join4:
+        	sys.stdout.write(narrator)
+        	sys.stdout.flush()
+        	time.sleep(0.025)
+        print()
+        print('Naline:')
+        join5 = '   Listeners, this is Naline, speaking to you in these transformative times. Our continent of Kenton has witnessed a monumental shift. Torre Hierro and his companions, including ' + name + ', who once arrived as a stranger to these shores, have achieved what seemed impossible. The empires that stood tall for centuries have fallen, their rule ended by the relentless push for a new order.\n'
+        for character in join5:
+        	sys.stdout.write(character)
+        	sys.stdout.flush()
+        	time.sleep(0.035)
+        print()
+        join6 = 'But this victory did not come without a cost. The streets of our cities and towns are marked with the echoes of those who stood against them. Countless lives were lost in this struggle, families torn apart, and the legacy of our history forever altered. The landscape of Kenton is forever changed, not just in its rulership but in the hearts of its people.\n'
+        for character in join6:
+        	sys.stdout.write(character)
+        	sys.stdout.flush()
+        	time.sleep(0.035)
+        print()
+        join7 = 'As we stand at the threshold of this new age, an age of freedom and equality, we must ask ourselves - was the price paid in lives and destruction worth the dawn of this new era? This question lingers in the air, a solemn reminder of the cost of change.\n'
+        for character in join7:
+        	sys.stdout.write(character)
+        	sys.stdout.flush()
+        	time.sleep(0.035)
+        print()
+        print('[')
+        join8 = 'ENDING: REVOLUTION'
+        for narrator in join8:
+        	sys.stdout.write(narrator)
+        	sys.stdout.flush()
+        	time.sleep(0.17)
+        print(']')
+        print()
+        char_menu()
+        print()
+        input('Press enter to end game')
+        title_screen()
+
+    elif selection == '2':
+        oppose1 = 'He sighs, a deep, rumbling sound that seems to carry the weight of the world.\n'
+        for narrator in oppose1:
+        	sys.stdout.write(narrator)
+        	sys.stdout.flush()
+        	time.sleep(0.025)
+        print()
+        print('Torre Hierro:')
+        oppose2 = '   I gotta say, I\'m a bit surprised to see you standin\' there, all ready to oppose me. Thought you of all people might understand what we\'re fightin\' for.\n'
+        for character in oppose2:
+        	sys.stdout.write(character)
+        	sys.stdout.flush()
+        	time.sleep(0.035)
+        print()
+        oppose3 = 'He steps forward, the distance between you seeming to close with his every word.\n'
+        for narrator in oppose3:
+        	sys.stdout.write(narrator)
+        	sys.stdout.flush()
+        	time.sleep(0.025)
+        print()
+        print('Torre Hierro:')
+        oppose4 = '   I pity you, I really do. You\'ve got spirit, but you\'re blind to the cage you\'re in. You\'re fightin\' for a world that doesn\'t care about you, about any of us.\n'
+        for character in oppose4:
+        	sys.stdout.write(character)
+        	sys.stdout.flush()
+        	time.sleep(0.035)
+        print()
+        print('Torre Hierro:')
+        oppose5 = '....\n'
+        for character in oppose5:
+        	sys.stdout.write(character)
+        	sys.stdout.flush()
+        	time.sleep(0.21)
+        print()
+        print('Torre Hierro:')
+        oppose6 = '   Well, if it\'s a fight you want, it\'s a fight you\'ll get. But remember, when all\'s said and done, you chose this path. You chose to stand in the way of change, of freedom. That\'s on you.\n'
+        for character in oppose6:
+        	sys.stdout.write(character)
+        	sys.stdout.flush()
+        	time.sleep(0.035)
+        print()
+        oppose7 = 'With those final words, Torre Hierro readies himself, a man resolute in his cause, yet carrying a hint of sorrow for the path you\'ve chosen.\n'
+        for character in oppose7:
+        	sys.stdout.write(character)
+        	sys.stdout.flush()
+        	time.sleep(0.035)
+        print()
+        input('Press enter to fight')
+
+        enemy_battlescore = 362
+        damage_taken = enemy_battlescore - might
+        hp = int(hp - damage_taken)
+        if hp > 0:
+            win1 = 'On the shattered grounds of a world torn by strife, you and Torre Hierro face off in a duel that feels like destiny. The sky above is a canvas of twilight, echoing the gravity of your clash. Each movement is a dance of fate, every strike a story in itself, etched in the annals of time.\n'
+            for narrator in win1:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.025)
+            print()
+            win2 = 'As the final act unfolds, one decisive blow shifts the balance. In the wake of this monumental confrontation, only one remains standing, their silhouette a testament to the price of victory.\n'
+            for narrator in win2:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.025)
+            print()
+            win3 = '' + name + 'stands victorious.\n'
+            for narrator in win3:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.17)
+            print()
+            win4 = 'Gazing down at the defeated Torre Hierro, your expression hardens with resolve.\n'
+            for narrator in win4:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.025)
+            print()
+            print('Type your last words to Torre Hierro\n')
+            victory = input('>: ')
+            print()
+            print(''+ name +':')
+            victory1 = '   '+ victory +'!\n'
+            for character in victory1:
+              sys.stdout.write(character)
+              sys.stdout.flush()
+              time.sleep(0.035)
+            print()
+            win5 = 'Torre Hierro\'s face, even in defeat, reflects a fleeting mixture of acceptance and finality, before he slips away into the stillness of eternity.\n'
+            for narrator in win5:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.025)
+            win6 = 'Months late'
+            for narrator in win6:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.025)
+            win7 = 'r...\n'
+            for narrator in win7:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.21)
+            print()
+            win8 =  'The radio crackles to life, cutting through the silence with Naline\'s voice. There\'s a solemnity in her tone, a departure from her usual liveliness.\n'
+            for narrator in win8:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.025)
+            print()
+            print('Naline:')
+            win9 = '   Listeners, this is Naline, speaking to you in these transformative times. Our continent of Kenton has witnessed a monumental shift. Torre Hierro and his companions, have achieved what . The empires that stood tall for centuries have fallen, their rule ended by the relentless push for a new order.\n'
+            for character in win9:
+            	sys.stdout.write(character)
+            	sys.stdout.flush()
+            	time.sleep(0.035)
+            print()
+            print('Naline:')
+            win10 = '   But let\'s not forget, this victory, monumental as it is, came at a cost. Our lands bear the scars of this struggle, the echoes of battles fought on our very streets. Countless lives were lost, not just among the rebels but among those who stood in defense of our existing order. Families were torn asunder, and the legacy of our history forever altered.\n'
+            for character in win10:
+            	sys.stdout.write(character)
+            	sys.stdout.flush()
+            	time.sleep(0.035)
+            print()
+            print('Naline:')
+            win11 = 'A moment of silence follows, heavy with reflection. "As we move forward from this turning point, one where the old remained and the new was silenced, we are left to ponder - what does this mean for the future of Kenton? Was the sacrifice made, the lives lost and the peace shattered, worth the maintenance of our status quo? This question, a solemn contemplation, remains with us as we navigate the uncharted waters of our collective future..\n'
+            for narrator in join4:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.025)
+            print()
+            print('[')
+            win12 = 'ENDING: RESTORATION'
+            for narrator in join8:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.17)
+            print(']')
+            print()
+            char_menu()
+            print()
+            input('Press enter to end game')
+            title_screen()
+            
+        else:
+            hp = 0
+            lose1 = 'On the shattered grounds of a world torn by strife, you and Torre Hierro face off in a duel that feels like destiny. The sky above is a canvas of twilight, echoing the gravity of your clash. Each movement is a dance of fate, every strike a story in itself, etched in the annals of time.\n'
+            for narrator in lose1:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.025)
+            print()
+            lose2 = 'As the final act unfolds, one decisive blow shifts the balance. In the wake of this monumental confrontation, only one remains standing, their silhouette a testament to the price of victory.\n'
+            for narrator in lose2:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.025)
+            print()
+            lose3 = 'Torre stands victorious.\n'
+            for narrator in lose3:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.17)
+            print()
+            lose4 = 'Through the hazy veil of near death, the player sees Torre Hierro as a looming, indistinct figure.\n'
+            for narrator in lose4:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.025)
+            print()
+            print('Torre Hierro:')
+            lose4 = 'Sorry, partner, but this was always how it was gonna end. You just picked the wrong side of history to stand on.\n'
+            for character in lose4:
+            	sys.stdout.write(character)
+            	sys.stdout.flush()
+            	time.sleep(0.035)
+            print()
+            lose5 = 'Months late'
+            for narrator in lose5:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.025)
+            lose6 = 'r...\n'
+            for narrator in lose6:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.21)
+            print()
+            lose7 =  'The radio comes to life, Naline\'s voice, with a note of unease. She speaks with a seriousness that reflects the urgency of the times.\n'
+            for narrator in lose7:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.025)
+            print()
+            print('Naline:')
+            lose8 = '   Listeners, this is Naline, reaching out across a continent on the brink. In recent months, we\'ve witnessed the Arteman Empire\'s mercenaries, one after another, fail to stop \'Shark Attack\'. This once-unknown rebel has not only resisted the empire\'s might but has grown stronger, his influence spreading like wildfire.\n'
+            for character in lose8:
+            	sys.stdout.write(character)
+            	sys.stdout.flush()
+            	time.sleep(0.035)
+            print()
+            print('Naline:')
+            lose9 = '   Torre, alongside his growing band of followers, is amassing forces unlike anything we\'ve seen before. Reports are coming in of him preparing to storm neighboring countries, a move that could change the very map of our world.\n'
+            for character in lose9:
+              sys.stdout.write(character)
+              sys.stdout.flush()
+              time.sleep(0.035)
+            print()
+            print('Naline:')
+            lose10 = '   As we move forward from this turning point, one where the old remained and the new was silenced, we are left to ponder - what does this mean for the future of Kenton? Was the sacrifice made, the lives lost and the peace shattered, worth the maintenance of our status quo? This question, a solemn contemplation, remains with us as we navigate the uncharted waters of our collective future.\n'
+            for narrator in lose10:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.025)
+            print()
+            print('[')
+            lose11 = 'ENDING: RAMPAGE'
+            for narrator in lose11:
+            	sys.stdout.write(narrator)
+            	sys.stdout.flush()
+            	time.sleep(0.17)
+            print(']')
+            print()
+            char_menu()
+            print()
+            input('Press enter to end game')
+            title_screen()
+
+    else:
+        Kalin()
+
+title_screen()
